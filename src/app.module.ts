@@ -3,7 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { GithubModule } from './github/github.module';
+import { UserModule } from './user/user.module';
+import { RepositoryModule } from './repository/repository.module';
+import { User } from './user/entities/user.entity';
+import { Repository } from './repository/entities/repository.entity';
 
 @Module({
   imports: [
@@ -17,11 +20,12 @@ import { GithubModule } from './github/github.module';
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
-        entities: [],
+        entities: [User, Repository],
         synchronize: process.env.DB_SYNCHRONIZE === 'true' ? true : false,
       })
     }),
-    GithubModule,
+    UserModule,
+    RepositoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
