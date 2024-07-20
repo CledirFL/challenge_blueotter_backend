@@ -1,7 +1,8 @@
+
 import { User } from 'src/user/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-@Entity()
-export class Repository {
+@Entity('repository')
+export class Repogithub {
     @PrimaryGeneratedColumn()
     id: number;
   
@@ -236,3 +237,4 @@ export class Repository {
     @Column({ length: 255 })
     default_branch: string;
 }
+

@@ -1,4 +1,4 @@
-import { Repository } from 'src/repository/entities/repository.entity';
+import { Repogithub } from 'src/repogithub/entities/repogithub.entity';
 import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity()
@@ -99,6 +99,6 @@ export class User {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @OneToMany(() => Repository, repository => repository.owner)
-    repositories: Repository[];
+    @OneToMany(() => Repogithub, repository => repository.owner)
+    repositories: Repogithub[];
 }
