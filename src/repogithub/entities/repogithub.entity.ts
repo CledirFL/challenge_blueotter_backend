@@ -207,8 +207,8 @@ export class Repogithub {
     @Column()
     open_issues_count: number;
   
-    @Column({ nullable: true, length: 255 })
-    license: string;
+    @Column({ nullable: true, length: 255, type: 'char' })
+    license: any;
   
     @Column()
     allow_forking: boolean;

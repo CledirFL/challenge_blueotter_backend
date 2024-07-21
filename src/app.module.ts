@@ -26,7 +26,6 @@ import { Repogithub } from './repogithub/entities/repogithub.entity';
     }),
     UserModule,
     RepogithubModule,
-    RepogithubModule,
   ],
   controllers: [AppController],
   providers: [AppService],

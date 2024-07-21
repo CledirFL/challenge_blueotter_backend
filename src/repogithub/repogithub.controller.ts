@@ -3,13 +3,18 @@ import { RepogithubService } from './repogithub.service';
 import { CreateRepogithubDto } from './dto/create-repogithub.dto';
 import { UpdateRepogithubDto } from './dto/update-repogithub.dto';
 
-@Controller('repogithub')
+@Controller('repository')
 export class RepogithubController {
   constructor(private readonly repogithubService: RepogithubService) {}
 
   @Post()
   create(@Body() createRepogithubDto: CreateRepogithubDto) {
     return this.repogithubService.create(createRepogithubDto);
+  }
+
+  @Get('/user/:name')
+  createRepobyUserLogin(@Param('name') name: string) {
+    return this.repogithubService.createRepobyUserLogin(name);
   }
 
   @Get()
