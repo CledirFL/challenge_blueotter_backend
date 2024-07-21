@@ -50,9 +50,9 @@ export class RepogithubService {
           }
         }
       }));
+      data = createdRepo
 
-
-      return { success, message, data: createdRepo };
+      return { success, message, createdRepo };
 
     } catch (error) {
       this.logger.error(`CREATE: Error ${error.message}`);
@@ -69,21 +69,21 @@ export class RepogithubService {
     try {
       this.logger.log('FINDALL: Finding user ')
       const user = await this.userService.findOneByLogin(userLogin)
-      if(user) {
+      if (user) {
         this.logger.log('FINDALL: User found')
-        const userRepo = await this.repogithubRepository.findBy({ owner: { id: user.id}})
+        const userRepo = await this.repogithubRepository.findBy({ owner: { id: user.id } })
         data = userRepo
-        return {success, message, data}
+        return { success, message, data }
       }
     } catch (error) {
       this.logger.log(`FINDALL: Error ${error.message}`)
       // return {success, message: error?.message, data}
       throw new InternalServerErrorException(error.message);
-    
+
     }
-    
+
     return await this.repogithubRepository.findBy({
-      owner: { login: userLogin}
+      owner: { login: userLogin }
     });
   }
 

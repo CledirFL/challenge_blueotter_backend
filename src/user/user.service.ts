@@ -50,7 +50,7 @@ export class UserService {
   async findOneByLogin(userLogin: string){
     this.logger.log('FIND: Finding user by userLogin')
      try {
-      const user = await this.userRepository.findOne({ where: { login: userLogin } })
+      const user = await this.userRepository.findOneOrFail({ where: { login: userLogin } })
       this.logger.log('FIND: User found')
       return user;
     } catch (error) {
