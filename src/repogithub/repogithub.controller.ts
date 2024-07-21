@@ -17,6 +17,11 @@ export class RepogithubController {
     return this.repogithubService.createRepobyUserLogin(name);
   }
 
+  @Get('/user/:name/repo')
+  findAllRepoByUserLogin(@Param('name') name: string){
+    return this.repogithubService.findAllByUserLogin(name);
+  }
+
   @Get()
   findAll() {
     return this.repogithubService.findAll();

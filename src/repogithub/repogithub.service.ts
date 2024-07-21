@@ -56,9 +56,35 @@ export class RepogithubService {
 
     } catch (error) {
       this.logger.error(`CREATE: Error ${error.message}`);
-      return { success: false, message: error?.message, data };
+      // return { success: false, message: error?.message, data };
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  async findAllByUserLogin(userLogin: string) {
+    this.logger.log('FINDALL: Fetching all repositories for user ' + userLogin)
+    let success = true;
+    let message = 'Repository found successfully';
+    let data = null;
+    try {
+      this.logger.log('FINDALL: Finding user ')
+      const user = await this.userService.findOneByLogin(userLogin)
+      if(user) {
+        this.logger.log('FINDALL: User found')
+        const userRepo = await this.repogithubRepository.findBy({ owner: { id: user.id}})
+        
+        return {success, message, data:userRepo}
+      }
+    } catch (error) {
+      this.logger.log(`FINDALL: Error ${error.message}`)
+      // return {success, message: error?.message, data}
+      throw new InternalServerErrorException(error.message);
+    
+    }
+    
+    return await this.repogithubRepository.findBy({
+      owner: { login: userLogin}
+    });
   }
 
   create(createRepogithubDto: CreateRepogithubDto) {

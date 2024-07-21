@@ -7,8 +7,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
+  constructor(@InjectRepository(User)
   private userRepository: Repository<User>) { }
 
   private readonly logger: Logger = new Logger(User.name);
@@ -48,8 +47,16 @@ export class UserService {
     }
   }
 
-  async findOneByLogin(){
-    
+  async findOneByLogin(userLogin: string){
+    this.logger.log('FIND: Finding user by userLogin')
+     try {
+      const user = await this.userRepository.findOne({ where: { login: userLogin } })
+      this.logger.log('FIND: User found')
+      return user;
+    } catch (error) {
+      this.logger.log(`FIND: Error ${error.message}`)
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   findAll() {
