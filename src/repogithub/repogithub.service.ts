@@ -72,8 +72,8 @@ export class RepogithubService {
       if(user) {
         this.logger.log('FINDALL: User found')
         const userRepo = await this.repogithubRepository.findBy({ owner: { id: user.id}})
-        
-        return {success, message, data:userRepo}
+        data = userRepo
+        return {success, message, data}
       }
     } catch (error) {
       this.logger.log(`FINDALL: Error ${error.message}`)
