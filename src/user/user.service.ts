@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,7 +10,6 @@ export class UserService {
   private userRepository: Repository<User>) { }
 
   private readonly logger: Logger = new Logger(User.name);
-
 
   async create(createUserDto: CreateUserDto) {
     this.logger.log('CREATE: Creating user')
@@ -59,19 +57,4 @@ export class UserService {
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }

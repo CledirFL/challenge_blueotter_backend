@@ -1,6 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { CreateRepogithubDto } from './dto/create-repogithub.dto';
-import { UpdateRepogithubDto } from './dto/update-repogithub.dto';
+import { Injectable, InternalServerErrorException, Logger, NotFoundException, } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repogithub } from './entities/repogithub.entity';
 import { Between, Like, Repository } from 'typeorm';
@@ -25,6 +23,10 @@ export class RepogithubService {
       this.logger.log('CREATE: Fetch user from github')
       const fetchUserFromGithub = await fetch('https://api.github.com/users/' + userLogin)
       const userGithub = await fetchUserFromGithub.json();
+
+      if (userGithub.message == 'Not Found') {
+        throw new NotFoundException('Not Found');
+      }
       const user = await this.userService.create(userGithub)
 
       this.logger.log('CREATE: Fetch repository from github')
@@ -53,7 +55,7 @@ export class RepogithubService {
       }));
       data = createdRepo
 
-      return { success, message, createdRepo };
+      return { success, message, data };
 
     } catch (error) {
       this.logger.error(`CREATE: Error ${error.message}`);
@@ -86,10 +88,6 @@ export class RepogithubService {
     return await this.repogithubRepository.findBy({
       owner: { login: userLogin }
     });
-  }
-
-  create(createRepogithubDto: CreateRepogithubDto) {
-    return `This action create new repogithub`;
   }
 
   async findAll(query: SearchRepogithubDto) {
@@ -159,18 +157,5 @@ export class RepogithubService {
 
     }
 
-  }
-
-  findOne(id: number) {
-
-    return `This action returns a #${id} repogithub`;
-  }
-
-  update(id: number, updateRepogithubDto: UpdateRepogithubDto) {
-    return `This action updates a #${id} repogithub`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} repogithub`;
   }
 }
