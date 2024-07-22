@@ -21,7 +21,7 @@ export class Repogithub {
     @ManyToOne(() => User, user => user.repositories)
     owner: User;
   
-    @Column({ nullable: true, length: 255 })
+    @Column({ nullable: true, type: 'text', charset: 'utf8mb4', collation: 'utf8mb4_unicode_ci' })
     description: string;
   
     @Column()
