@@ -14,6 +14,23 @@ export class RepogithubService {
 
   private readonly logger: Logger = new Logger(Repogithub.name);
 
+  private selectedColumn = {
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      url: true,
+      created_at: true,
+      language: true,
+      owner: {
+        name: true,
+        id: true,
+        login: true,
+        avatar_url: true,
+      }
+    },
+    relations: ['owner'], // Ensure the owner relation is loaded
+  }
   async createRepobyUserLogin(userLogin: string) {
     this.logger.log('CREATE: Creating Repository')
     let success = true;
@@ -37,7 +54,8 @@ export class RepogithubService {
 
         this.logger.log('CREATE: Checking if repo ' + repo.name + ' already exists');
         const alreadyCreated = await this.repogithubRepository.findOne({
-          where: { id: repo.id }
+          where: { id: repo.id },
+          ...this.selectedColumn
         })
 
         if (alreadyCreated) {
@@ -49,7 +67,11 @@ export class RepogithubService {
           const saveRepo = await this.repogithubRepository.save(newRepo)
           if (saveRepo) {
             this.logger.log('CREATE: Repo ' + saveRepo.name + ' created successfully');
-            return saveRepo;
+            const selectedRepo = await this.repogithubRepository.findOne({
+              ...this.selectedColumn, 
+              where: { id: saveRepo.id },
+            })
+            return selectedRepo;
           }
         }
       }));
@@ -75,21 +97,7 @@ export class RepogithubService {
       if (user) {
         this.logger.log('FINDALL: User found')
         const userRepo = await this.repogithubRepository.find({
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            url: true,
-            created_at: true,
-            language: true,
-            owner: {
-              name: true,
-              id: true,
-              login: true,
-              avatar_url: true,
-            }
-          },
-          relations: ['owner'],
+          ...this.selectedColumn, 
           where: {
             owner: { id: user.id },
           }
@@ -103,10 +111,6 @@ export class RepogithubService {
       throw new InternalServerErrorException(error.message);
 
     }
-
-    // return await this.repogithubRepository.findBy({
-    //   owner: { login: userLogin }
-    // });
   }
 
   async findAll(query: SearchRepogithubDto) {
@@ -154,18 +158,7 @@ export class RepogithubService {
     this.logger.log('Search: Finding repositories');
     try {
       const result = await this.repogithubRepository.find({
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          url: true,
-          created_at: true,
-          language: true,
-          owner: {
-            name: true
-          }
-        },
-        relations: ['owner'],
+        ...this.selectedColumn,
         where: queryConditions
       })
       data = result
