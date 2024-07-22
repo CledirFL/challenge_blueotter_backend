@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  blueotter:
+    build: .
+    container_name: api
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: mysql
+      DB_DATABASE: github
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+  db:
+    image: mysql:5.7
+    container_name: mysql_db
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: github
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql_data:/var/lib/mysql
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mysql_data:
