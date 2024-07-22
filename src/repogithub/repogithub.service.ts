@@ -74,7 +74,26 @@ export class RepogithubService {
       const user = await this.userService.findOneByLogin(userLogin)
       if (user) {
         this.logger.log('FINDALL: User found')
-        const userRepo = await this.repogithubRepository.findBy({ owner: { id: user.id } })
+        const userRepo = await this.repogithubRepository.find({
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            url: true,
+            created_at: true,
+            language: true,
+            owner: {
+              name: true,
+              id: true,
+              login: true,
+              avatar_url: true,
+            }
+          },
+          relations: ['owner'],
+          where: {
+            owner: { id: user.id },
+          }
+        })
         data = userRepo
         return { success, message, data }
       }
@@ -85,9 +104,9 @@ export class RepogithubService {
 
     }
 
-    return await this.repogithubRepository.findBy({
-      owner: { login: userLogin }
-    });
+    // return await this.repogithubRepository.findBy({
+    //   owner: { login: userLogin }
+    // });
   }
 
   async findAll(query: SearchRepogithubDto) {
@@ -146,6 +165,7 @@ export class RepogithubService {
             name: true
           }
         },
+        relations: ['owner'],
         where: queryConditions
       })
       data = result
